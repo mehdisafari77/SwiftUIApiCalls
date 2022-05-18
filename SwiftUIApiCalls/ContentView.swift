@@ -21,12 +21,13 @@ struct URLImage: View {
                 .background(Color.gray)
         }
         else {
-            Image("")
+            Image(systemName: "video")
                 .resizable()
+                .aspectRatio(contentMode: .fit)
                 .frame(width: 130, height: 70)
                 .background(Color.gray)
                 .onAppear {
-                    
+                    fetchData()
                 }
         }
     }
@@ -51,9 +52,7 @@ struct ContentView: View {
             List {
                 ForEach(viewModel.courses, id: \.self) { course in
                     HStack {
-                        Image("")
-                            .frame(width: 130, height: 70)
-                            .background(Color.gray)
+                        URLImage(urlString: course.image)
                         
                         Text(course.name)
                             .bold()

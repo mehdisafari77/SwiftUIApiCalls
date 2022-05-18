@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 @main
 struct SwiftUIApiCallsApp: App {
     var body: some Scene {

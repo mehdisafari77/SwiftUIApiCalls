@@ -7,36 +7,38 @@
 
 import SwiftUI
 
-struct Course: Hashable, Codable {
-    let name: String
-    let image: String
-}
-
-class ViewModel: ObservableObject {
-    @Published var courses: [Course] = []
+struct URLImage: View {
+    let urlString: String
     
-    func fetch() {
-        guard let url = URL(string: "https://iosacademy.io/api/v1/courses/index.php") else {
+    @State var data: Data?
+    
+    var body: some View {
+        if let data = data, let uiimage = UIImage(data: data) {
+            Image(uiImage: uiimage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 130, height: 70)
+                .background(Color.gray)
+        }
+        else {
+            Image("")
+                .resizable()
+                .frame(width: 130, height: 70)
+                .background(Color.gray)
+                .onAppear {
+                    
+                }
+        }
+    }
+    
+    private func fetchData() {
+        guard let url = URL(string: urlString) else {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { [ weak self ] data, _,
-        error in
-            guard let data = data, error == nil else {
-                return
-            }
-            // Convert to JSON
-            do {
-                let courses = try JSONDecoder().decode([Course].self, from: data)
-                DispatchQueue.main.async {
-                    self?.courses = courses
-                }
-            }
-            catch {
-                print(error)
-            }
+        let task = URLSession.shared.dataTask(with: url) { data, _, _ in
+            self.data = data
         }
-        
         task.resume()
     }
 }
